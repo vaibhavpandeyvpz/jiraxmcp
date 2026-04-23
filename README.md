@@ -1,5 +1,9 @@
 # jiraxmcp
 
+[![npm version](https://img.shields.io/npm/v/jiraxmcp)](https://www.npmjs.com/package/jiraxmcp)
+[![Publish to NPM](https://github.com/vaibhavpandeyvpz/jiraxmcp/actions/workflows/publish-npm.yml/badge.svg)](https://github.com/vaibhavpandeyvpz/jiraxmcp/actions/workflows/publish-npm.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 `jiraxmcp` is an open-source Jira stdio MCP server built on top of [`jira.js`](https://github.com/mrrefactoring/jira.js/), `commander`, and `@modelcontextprotocol/sdk`.
 
 It lets MCP-compatible clients interact with Jira Cloud through issue, search, agile, comment, link, and attachment tools. It can also subscribe to inbound Jira webhook events through an MCP notification channel backed by a built-in HTTP server.
