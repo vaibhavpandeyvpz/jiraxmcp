@@ -1,0 +1,60 @@
+{
+  "name": "jiraxmcp",
+  "version": "0.1.0",
+  "description": "TypeScript stdio MCP server and CLI for Jira Cloud.",
+  "type": "module",
+  "bin": {
+    "jiraxmcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-instructions.mjs",
+    "clean": "rm -rf dist",
+    "dev": "tsx src/index.ts",
+    "prepack": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "jira",
+    "atlassian",
+    "webhook",
+    "cli",
+    "typescript"
+  ],
+  "author": "Vaibhav Pandey <contact@vaibhavpandey.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaibhavpandeyvpz/jiraxmcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vaibhavpandeyvpz/jiraxmcp/issues"
+  },
+  "homepage": "https://github.com/vaibhavpandeyvpz/jiraxmcp#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "commander": "^14.0.3",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jira.js": "^5.3.1",
+    "zod": "^4.3.6"
+  }
+}
