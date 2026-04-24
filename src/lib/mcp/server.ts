@@ -14,6 +14,7 @@ import { packageMetadata } from "../package-metadata.js";
 import { createJsonResult } from "./helpers.js";
 
 const looseObjectSchema = z.record(z.string(), z.any());
+const HOOMAN_CHANNEL = "hooman/channel";
 
 function instructions(channel = false): string {
   const files = ["formatting.md", channel ? "channel.md" : null].filter(
@@ -31,7 +32,7 @@ export class JiraMcpServer {
 
   private constructor(
     private readonly session: JiraSession,
-    private readonly channel?: string,
+    private readonly channels: boolean,
   ) {
     this.mcp = new McpServer(
       {
@@ -40,21 +41,22 @@ export class JiraMcpServer {
       },
       {
         capabilities: {
-          experimental: channel
+          experimental: channels
             ? {
-                "identity/user": { path: "meta.user" },
-                "identity/session": { path: "meta.session" },
-                [channel]: {},
+                "hooman/user": { path: "meta.user" },
+                "hooman/session": { path: "meta.session" },
+                "hooman/thread": { path: "meta.thread" },
+                [HOOMAN_CHANNEL]: {},
               }
             : undefined,
         },
-        instructions: instructions(Boolean(channel)),
+        instructions: instructions(channels),
       },
     );
   }
 
-  static create(session: JiraSession, channel?: string): JiraMcpServer {
-    const server = new JiraMcpServer(session, channel);
+  static create(session: JiraSession, channels: boolean): JiraMcpServer {
+    const server = new JiraMcpServer(session, channels);
     server.registerTools();
     return server;
   }
@@ -64,14 +66,14 @@ export class JiraMcpServer {
   }
 
   async subscribe(): Promise<void> {
-    if (!this.channel) {
-      throw new Error("Channel not specified");
+    if (!this.channels) {
+      throw new Error("Channels are not enabled");
     }
 
     const channel = new JiraChannel(
       this.session,
       this.mcp.server,
-      this.channel,
+      HOOMAN_CHANNEL,
     );
     await channel.start();
   }

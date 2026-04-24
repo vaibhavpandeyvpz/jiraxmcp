@@ -16,11 +16,14 @@ export class McpCommand implements CliCommand {
     program
       .command("mcp")
       .description("Start the stdio MCP server for Jira Cloud")
-      .option("--channel <name>", "Channel name, for receiving notifications")
+      .option(
+        "--channels",
+        "Enable hooman/channel notifications for Jira webhooks",
+      )
       .action(this.action.bind(this));
   }
 
-  private async action(options: { channel?: string }): Promise<void> {
+  private async action(options: { channels?: boolean }): Promise<void> {
     let keep = false;
     const session = new JiraSession(this.io);
 
@@ -30,12 +33,12 @@ export class McpCommand implements CliCommand {
     });
 
     try {
-      const server = JiraMcpServer.create(session, options.channel);
+      const server = JiraMcpServer.create(session, Boolean(options.channels));
       await server.start(new StdioServerTransport());
       this.io.line("Starting Jira MCP server...");
       await session.start();
 
-      if (options.channel) {
+      if (options.channels) {
         await session.startWebhookServer();
         await server.subscribe();
       }

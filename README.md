@@ -64,10 +64,10 @@ export JIRA_ACCESS_TOKEN="your-access-token"
 npx jiraxmcp mcp
 ```
 
-3. If your MCP host supports notifications and you want inbound Jira webhook events, provide a channel name:
+3. If your MCP host supports notifications and you want inbound Jira webhook events, enable channels:
 
 ```bash
-npx jiraxmcp mcp --channel claude/channel
+npx jiraxmcp mcp --channels
 ```
 
 4. Configure Jira webhooks to point to your listener:
@@ -129,15 +129,16 @@ The server currently exposes these tools:
 
 ## Push Channel
 
-When started with `--channel <name>`, the server:
+When started with `--channels`, the server:
 
-- advertises the experimental MCP capability `<name>`
-- advertises `identity/user` with path `meta.user`
-- advertises `identity/session` with path `meta.session`
+- advertises the experimental MCP capability `hooman/channel`
+- advertises `hooman/user` with path `meta.user`
+- advertises `hooman/session` with path `meta.session`
+- advertises `hooman/thread` with path `meta.thread`
 - starts a built-in HTTP webhook listener on `/webhook`
 - verifies `X-Hub-Signature` when `JIRA_WEBHOOK_SECRET` is set
 - ignores duplicate webhook deliveries in memory using `X-Atlassian-Webhook-Identifier`
-- emits `notifications/<name>` for inbound Jira webhook events
+- emits `notifications/hooman/channel` for inbound Jira webhook events
 
 Each notification includes:
 
@@ -145,6 +146,7 @@ Each notification includes:
 - `meta.source`: `jira`
 - `meta.user`: the best available Jira actor identifier from the webhook payload
 - `meta.session`: usually the issue key, otherwise the project key or webhook event name
+- `meta.thread`: omitted for Jira webhook events
 
 The JSON-decoded `content` payload includes:
 
@@ -172,6 +174,12 @@ Supported variables:
 - `JIRA_WEBHOOK_SECRET`
 
 If `JIRA_WEBHOOK_PORT` is not set, the webhook listener uses `6543`. `JIRA_WEBHOOK_HOST` defaults to `127.0.0.1`; set it to `0.0.0.0` if you need Jira to reach the listener from another machine. `JIRA_WEBHOOK_SECRET` is optional, but when set the webhook endpoint only accepts deliveries whose `X-Hub-Signature` matches the raw request body.
+
+## Local Data
+
+`jiraxmcp` stores local state under `./.jiraxmcp/` when that folder exists in the current working directory, otherwise `~/.jiraxmcp/`.
+
+Downloaded issue attachments are saved under `attachments/` within that data directory.
 
 ## License
 
