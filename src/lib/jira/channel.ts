@@ -56,8 +56,9 @@ export class JiraChannel {
       await this.mcp.notification({
         method: `notifications/${this.channel}`,
         params: {
-          content: JSON.stringify(payload),
+          content: "Jira event received.",
           attachments,
+          event: payload,
           meta: {
             source: "jira",
             user:
