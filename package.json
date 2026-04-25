@@ -1,6 +1,6 @@
 {
   "name": "jiraxmcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "TypeScript stdio MCP server and CLI for Jira Cloud.",
   "type": "module",
   "bin": {
