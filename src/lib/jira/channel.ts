@@ -51,11 +51,13 @@ export class JiraChannel {
         ...event,
         self: this.self,
       };
+      const attachments = extractLocalAttachmentPaths(event.payload);
 
       await this.mcp.notification({
         method: `notifications/${this.channel}`,
         params: {
           content: JSON.stringify(payload),
+          attachments,
           meta: {
             source: "jira",
             user:
@@ -89,4 +91,60 @@ function normalize(value: unknown): string | undefined {
 
   const normalized = value.trim().toLowerCase();
   return normalized.length > 0 ? normalized : undefined;
+}
+
+function looksLikeLocalPath(value: string): boolean {
+  if (!value) {
+    return false;
+  }
+  if (/^[a-z]+:\/\//i.test(value)) {
+    return false;
+  }
+  return (
+    value.startsWith("/") ||
+    value.startsWith("./") ||
+    value.startsWith("../") ||
+    /^[A-Za-z]:[\\/]/.test(value)
+  );
+}
+
+function extractLocalAttachmentPaths(
+  payload: Record<string, unknown>,
+): string[] {
+  const result = new Set<string>();
+  const stack: unknown[] = [payload];
+  while (stack.length > 0) {
+    const current = stack.pop();
+    if (!current) {
+      continue;
+    }
+    if (Array.isArray(current)) {
+      stack.push(...current);
+      continue;
+    }
+    if (typeof current !== "object") {
+      continue;
+    }
+    for (const [key, value] of Object.entries(
+      current as Record<string, unknown>,
+    )) {
+      if (typeof value === "string") {
+        const normalizedKey = key.trim().toLowerCase();
+        if (
+          (normalizedKey === "path" ||
+            normalizedKey === "local_path" ||
+            normalizedKey === "filepath" ||
+            normalizedKey === "file_path") &&
+          looksLikeLocalPath(value.trim())
+        ) {
+          result.add(value.trim());
+        }
+        continue;
+      }
+      if (value && typeof value === "object") {
+        stack.push(value);
+      }
+    }
+  }
+  return [...result];
 }
