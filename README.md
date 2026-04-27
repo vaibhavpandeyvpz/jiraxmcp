@@ -177,7 +177,7 @@ If `JIRA_WEBHOOK_PORT` is not set, the webhook listener uses `6543`. `JIRA_WEBHO
 
 ## Local Data
 
-`jiraxmcp` stores local state under `./.jiraxmcp/` when that folder exists in the current working directory, otherwise `~/.jiraxmcp/`.
+`jiraxmcp` stores local state under `~/.jiraxmcp/`.
 
 Downloaded issue attachments are saved under `attachments/` within that data directory.
 

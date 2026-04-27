@@ -1,4 +1,3 @@
-import { existsSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -6,10 +5,6 @@ import { join } from "node:path";
 export const APP_FOLDER = ".jiraxmcp";
 
 export function appRoot(): string {
-  const local = join(process.cwd(), APP_FOLDER);
-  if (existsSync(local)) {
-    return local;
-  }
   return join(homedir(), APP_FOLDER);
 }
 
