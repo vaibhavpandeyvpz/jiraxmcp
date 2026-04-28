@@ -3,8 +3,14 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 export const APP_FOLDER = ".jiraxmcp";
+const JIRAXMCP_HOME_ENV = "JIRAXMCP_HOME";
 
 export function appRoot(): string {
+  const override = process.env[JIRAXMCP_HOME_ENV]?.trim();
+  if (override) {
+    return override;
+  }
+
   return join(homedir(), APP_FOLDER);
 }
 
